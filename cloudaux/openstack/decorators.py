@@ -8,7 +8,7 @@
 import os
 from functools import wraps
 
-from openstack import connection
+from openstack import connect
 from openstack.config.loader import OpenStackConfig
 from openstack.exceptions import HttpException
 
@@ -18,7 +18,7 @@ CACHE = {}
 
 def _connect(cloud_name, region, yaml_file):
     os.environ["OS_CLIENT_CONFIG_FILE"] = yaml_file
-    conn = openstack.connect(cloud=cloud_name, region_name=region)
+    conn = connect(cloud=cloud_name, region_name=region)
     return ( conn.name, conn )
 
 
