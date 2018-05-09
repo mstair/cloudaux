@@ -5,9 +5,11 @@
     :license: Apache, see LICENSE for more details.
 .. moduleauthor:: Michael Stair <mstair@att.com>
 """
+import os
 from functools import wraps
 
-from openstack import connection, config
+from openstack import connection
+from openstack.config.loader import OpenStackConfig
 from openstack.exceptions import HttpException
 
 """ this is mix of the aws and gcp decorator conventions """
@@ -15,15 +17,14 @@ from openstack.exceptions import HttpException
 CACHE = {}
 
 def _connect(cloud_name, region, yaml_file):
-    occ = config.OpenStackConfig(config_files=[yaml_file])
-    cloud = occ.get_one_cloud(cloud_name, region_name=region)
-    _cloud_name = cloud.get_auth_args().get('project_id')
-    return ( _cloud_name, connection.from_config(cloud_config=cloud) )
+    os.environ["OS_CLIENT_CONFIG_FILE"] = yaml_file
+    conn = openstack.connect(cloud=cloud_name, region_name=region)
+    return ( conn.name, conn )
 
 
 def get_regions(cloud_name, yaml_file):
-    occ = config.OpenStackConfig(config_files=[yaml_file])
-    return occ._get_regions(cloud_name)
+    config = OpenStackConfig(config_files=[yaml_file])
+    return config._get_regions(cloud_name)
 
 
 def keystone_cached_conn(cloud_name, region, yaml_file):
