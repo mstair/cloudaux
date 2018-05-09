@@ -7,8 +7,7 @@
 """
 from functools import wraps
 
-from os_client_config import OpenStackConfig
-from openstack import connection
+from openstack import connection, config
 from openstack.exceptions import HttpException
 
 """ this is mix of the aws and gcp decorator conventions """
@@ -16,14 +15,14 @@ from openstack.exceptions import HttpException
 CACHE = {}
 
 def _connect(cloud_name, region, yaml_file):
-    occ = OpenStackConfig(config_files=[yaml_file])
+    occ = config.OpenStackConfig(config_files=[yaml_file])
     cloud = occ.get_one_cloud(cloud_name, region_name=region)
     _cloud_name = cloud.get_auth_args().get('project_id')
     return ( _cloud_name, connection.from_config(cloud_config=cloud) )
 
 
 def get_regions(cloud_name, yaml_file):
-    occ = OpenStackConfig(config_files=[yaml_file])
+    occ = config.OpenStackConfig(config_files=[yaml_file])
     return occ._get_regions(cloud_name)
 
 
