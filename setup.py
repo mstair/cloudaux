@@ -49,7 +49,7 @@ gcp_require = [
 ]
 
 openstack_require = [
-    'openstacksdk>=0.11.1'
+    'openstacksdk>=0.13.1'
 ]
 
 tests_require = [

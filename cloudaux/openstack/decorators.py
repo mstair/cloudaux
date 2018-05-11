@@ -18,8 +18,7 @@ CACHE = {}
 
 def _connect(cloud_name, region, yaml_file):
     os.environ["OS_CLIENT_CONFIG_FILE"] = yaml_file
-    conn = connect(cloud=cloud_name, region_name=region)
-    return ( conn.name, conn )
+    return connect(cloud=cloud_name, region_name=region)
 
 
 def get_regions(cloud_name, yaml_file):
@@ -42,11 +41,11 @@ def keystone_cached_conn(cloud_name, region, yaml_file):
         else:
             return conn
     try:
-        _cloud_name, conn = _connect(cloud_name, region, yaml_file)
+        conn = _connect(cloud_name, region, yaml_file)
     except Exception as e:
         raise e
 
-    CACHE[key] = (_cloud_name, conn)
+    CACHE[key] = (conn.name, conn)
     return conn
 
 def openstack_conn():
